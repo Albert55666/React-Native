@@ -11,7 +11,7 @@ export default function Welcome() {
       <Text>Click Button To Get Started </Text>
       <Button
         onPress={() => {
-          router.push("/home", {});
+          router.push("/Login", {});
         }}
         style={style.button}
       >
@@ -30,7 +30,8 @@ const style = StyleSheet.create({
     gap: 10,
   },
   button: {
-    backgroundColor: "#0057b7",
+    // backgroundColor: "#0057b7",
+    backgroundColor: "black",
     width: "100%",
     padding: 10,
     textAlign: "center",

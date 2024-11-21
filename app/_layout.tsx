@@ -10,6 +10,8 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
 import { useColorScheme } from "@/components/useColorScheme";
+import { Provider } from "react-redux";
+import { store } from "@/store";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -53,11 +55,14 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="splash" options={{ headerShown: false }} />
-        <Stack.Screen name="(home)" options={{ headerShown: false }} />
-      </Stack>
+      <Provider store={store}>
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="splash" options={{ headerShown: false }} />
+          <Stack.Screen name="(home)" options={{ headerShown: false }} />
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        </Stack>
+      </Provider>
     </ThemeProvider>
   );
 }

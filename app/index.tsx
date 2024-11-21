@@ -22,7 +22,7 @@ export default function LandingLayout() {
 
 const style = StyleSheet.create({
   wrapper: {
-    backgroundColor: "red",
+    // backgroundColor: "red",
     flex: 1,
   },
   splashScreenBackground: {
@@ -30,7 +30,8 @@ const style = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     // backgroundColor: "#ffffff",
-    backgroundColor: "#0057b7",
+    // backgroundColor: "#0057b7",
+    backgroundColor: "black",
   },
   logo: {
     color: "white",
