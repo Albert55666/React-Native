@@ -3,18 +3,36 @@ import { Image, StyleSheet } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { useEffect, useState } from "react";
 import { router } from "expo-router";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { SelectAuth, setUser } from "@/store/slice/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function LandingLayout() {
+  // const { user } = useAppSelector(SelectAuth);
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
-    setTimeout(() => {
-      router.push("/splash");
+    let user: any;
+    async function getToken() {
+      user = await AsyncStorage.getItem("user");
+      dispatch(setUser(JSON.parse(user!)));
+    }
+    getToken();
+
+    setTimeout(async () => {
+      if (user) {
+        return router.push("/home");
+      } else {
+        router.push("/splash");
+      }
+      // console.log("is not user");
     }, 1500);
   }, []);
 
   return (
     <View style={style.wrapper}>
       <View style={[style.splashScreenBackground]}>
-        <Text style={style.logo}>FOOD APP</Text>
+        <Text style={style.logo}>SHONTREATS</Text>
       </View>
     </View>
   );

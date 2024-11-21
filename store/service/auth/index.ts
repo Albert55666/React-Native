@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { post } from "../../../http/request";
+import axios from "axios";
 
 const API_KEY = "AIzaSyBkkeQdVBXLhYu8ueLbvPbNWb5ptL7Zwwk";
 
@@ -21,14 +22,18 @@ export const signIn = createAsyncThunk(
 );
 
 export const registeration = createAsyncThunk(
-  "register/register",
+  "auth/register",
   async (params: any, thunkAPI) => {
+    console.log(params);
+
     try {
-      const response = await post(
+      const response = await axios.post(
         `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[${API_KEY}]`,
-        params,
-        {}
+        params
       );
+
+      console.log(response);
+
       return response;
     } catch (error: any) {
       const message = error.message.toString();

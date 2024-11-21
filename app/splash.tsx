@@ -1,10 +1,13 @@
-import { Image, StyleSheet } from "react-native";
-
+import { StyleSheet } from "react-native";
 import { Text, View } from "@/components/Themed";
 import Button from "@/components/Button";
 import { router } from "expo-router";
+import { SelectAuth } from "@/store/slice/auth";
+import { useAppSelector } from "@/store";
 
 export default function Welcome() {
+  const { user } = useAppSelector(SelectAuth);
+
   return (
     <View style={style.wrapper}>
       <Text style={style.welcomeText}>WELCOME TO SHONTREATS</Text>

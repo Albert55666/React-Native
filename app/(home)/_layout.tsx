@@ -1,21 +1,27 @@
 import React from "react";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Link, Tabs } from "expo-router";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { Link, router, Tabs } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
-import { useClientOnlyValue } from "@/components/useClientOnlyValue";
+import { useAppDispatch } from "@/store";
+import { logUserOut } from "@/store/slice/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+// import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>["name"];
+  name: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
   color: string;
 }) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
+  return (
+    <MaterialCommunityIcons size={28} style={{ marginBottom: -3 }} {...props} />
+  );
 }
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const dispatch = useAppDispatch();
 
   return (
     <Tabs
@@ -34,20 +40,24 @@ export default function TabLayout() {
           title: "Home",
           headerShown: true,
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-          // headerRight: () => (
-          //   <Link href="/modal" asChild>
-          //     <Pressable>
-          //       {({ pressed }) => (
-          //         <FontAwesome
-          //           name="info-circle"
-          //           size={25}
-          //           color={Colors[colorScheme ?? "light"].text}
-          //           style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-          //         />
-          //       )}
-          //     </Pressable>
-          //   </Link>
-          // ),
+          headerRight: () => (
+            <Pressable
+              onPress={async () => {
+                dispatch(logUserOut());
+                await AsyncStorage.removeItem("user");
+                router.replace("/Login");
+              }}
+            >
+              {({ pressed }) => (
+                <MaterialCommunityIcons
+                  name="logout"
+                  size={25}
+                  color={Colors[colorScheme ?? "light"].text}
+                  style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                />
+              )}
+            </Pressable>
+          ),
         }}
       />
 

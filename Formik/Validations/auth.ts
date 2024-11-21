@@ -11,10 +11,8 @@ export const loginSchema = Yup.object().shape({
 });
 
 export const registerSchema = Yup.object().shape({
-  username: Yup.string()
-    .required("username Required")
-    .min(2, "Too Short!")
-    .matches(/^[a-zA-Z]*$/, "First name cannot contain special characters"),
+  username: Yup.string().required("username Required").min(2, "Too Short!"),
+  // .matches(/^[a-zA-Z]*$/, "First name cannot contain special characters"),
   password: Yup.string()
     .min(6, "Too Short!")
     .required("Password is Required")

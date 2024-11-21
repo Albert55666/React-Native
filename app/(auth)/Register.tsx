@@ -1,14 +1,54 @@
 import CustomButton from "@/components/FormInput/Button";
 import CustomFieldInput from "@/components/FormInput/TextField";
 import { Text, View } from "@/components/Themed";
-import { StyleSheet } from "react-native";
+import { Alert, StyleSheet } from "react-native";
 import Zocial from "@expo/vector-icons/Zocial";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import useAuthHooks from "@/hooks/authHooks";
+import { useFormik } from "formik";
+import { initialRegister } from "@/Formik/InitialValues/auth";
+import { registerSchema } from "@/Formik/Validations/auth";
+import { useAppDispatch } from "@/store";
+import { registeration } from "@/store/service/auth";
+import { setUser } from "@/store/slice/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Register() {
-  const { register } = useAuthHooks();
+  const dispatch = useAppDispatch();
+
+  const register = useFormik({
+    initialValues: initialRegister,
+    validationSchema: registerSchema,
+    validateOnMount: false,
+    validateOnBlur: true,
+    validateOnChange: true,
+    onSubmit: async (values, { setSubmitting }) => {
+      try {
+        setSubmitting(true);
+        dispatch(
+          registeration({
+            email: values.email,
+            password: values.password,
+            returnSecureToken: true,
+          })
+        );
+        const jsonValue = JSON.stringify(values);
+        await AsyncStorage.setItem("user", jsonValue);
+
+        dispatch(setUser({ ...values, token: Date.now() }));
+
+        router.push("/home");
+
+        setSubmitting(false);
+      } catch (error: any) {
+        console.log(error);
+
+        setSubmitting(false);
+        Alert.alert("Registeration Failed", "", [{ style: "cancel" }]);
+      }
+    },
+  });
   return (
     <View style={style.wrapper}>
       <View style={style.container}>
@@ -17,6 +57,7 @@ export default function Register() {
         <View style={style.inputContainer}>
           <CustomFieldInput
             onChangeText={register.handleChange("username")}
+            onBlur={register.handleBlur("username")}
             placeholder="Username"
             value={register.values.username}
             error={register.errors.username!}
@@ -28,6 +69,7 @@ export default function Register() {
 
           <CustomFieldInput
             onChangeText={register.handleChange("email")}
+            onBlur={register.handleBlur("email")}
             placeholder="Enter Your Email "
             keyboardType="email-address"
             style={style.input}
@@ -38,6 +80,7 @@ export default function Register() {
 
           <CustomFieldInput
             onChangeText={register.handleChange("password")}
+            onBlur={register.handleBlur("password")}
             placeholder="Enter Your Password "
             value={register.values.password}
             error={register.errors.password!}
@@ -50,6 +93,7 @@ export default function Register() {
           <CustomFieldInput
             placeholder="Enter Your Password "
             onChangeText={register.handleChange("confirmPassword")}
+            onBlur={register.handleBlur("confirmPassword")}
             value={register.values.confirmPassword}
             error={register.errors.confirmPassword!}
             name="confirmPassword"
@@ -58,7 +102,13 @@ export default function Register() {
             // label="Email"
           />
 
-          <CustomButton style={style.loginButton}>Register</CustomButton>
+          <CustomButton
+            loading={register.isSubmitting}
+            onPress={register.handleSubmit}
+            style={style.loginButton}
+          >
+            Register
+          </CustomButton>
         </View>
 
         <View style={style.optionalContainer}>
@@ -109,7 +159,7 @@ const style = StyleSheet.create({
     fontSize: 15,
   },
   inputContainer: {
-    gap: 15,
+    gap: 25,
   },
   loginButton: {
     backgroundColor: "black",

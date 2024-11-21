@@ -5,9 +5,13 @@ import { View, Text, Pressable } from "react-native";
 export default function CustomButton({
   children,
   style,
+  onPress,
+  loading,
 }: {
   children: ReactNode;
   style?: StyleProp<ViewStyle>;
+  onPress?: () => void;
+  loading?: boolean;
 }) {
   return (
     <View style={[styles.buttonContainer, style]}>
@@ -18,8 +22,11 @@ export default function CustomButton({
             ? [styles.buttonContainer2, styles.buttonInerPress]
             : styles.buttonContainer2
         }
+        onPress={onPress}
       >
-        <Text style={styles.buttonText}>{children}</Text>
+        <Text style={styles.buttonText}>
+          {loading ? "loading...." : children}
+        </Text>
       </Pressable>
     </View>
   );

@@ -1,14 +1,41 @@
 import CustomButton from "@/components/FormInput/Button";
 import CustomFieldInput from "@/components/FormInput/TextField";
 import { Text, View } from "@/components/Themed";
-import { StyleSheet } from "react-native";
+import { Alert, StyleSheet } from "react-native";
 import Zocial from "@expo/vector-icons/Zocial";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Link } from "expo-router";
-import useAuthHooks from "@/hooks/authHooks";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFormik } from "formik";
+import { initialLogin } from "@/Formik/InitialValues/auth";
+import { loginSchema } from "@/Formik/Validations/auth";
+import { useAppDispatch } from "@/store";
+import { signIn } from "@/store/service/auth";
 
 export default function Login() {
-  const { login } = useAuthHooks();
+  const dispatch = useAppDispatch();
+
+  const login = useFormik({
+    initialValues: initialLogin,
+    validationSchema: loginSchema,
+    validateOnMount: false,
+    validateOnBlur: true,
+    validateOnChange: true,
+    onSubmit: async (values, { setSubmitting }) => {
+      try {
+        setSubmitting(true);
+        const { data } = await dispatch(
+          signIn({ ...values, returnSecureToken: true })
+        ).unwrap();
+
+        setSubmitting(false);
+      } catch (error: any) {
+        setSubmitting(false);
+        Alert.alert("Invalid Login Details", "", [{ style: "cancel" }]);
+      }
+    },
+  });
+
   return (
     <View style={style.wrapper}>
       <View style={style.container}>
@@ -19,6 +46,7 @@ export default function Login() {
         <View style={style.inputContainer}>
           <CustomFieldInput
             onChangeText={login.handleChange("email")}
+            onBlur={login.handleBlur("email")}
             value={login.values.email}
             error={login.errors.email!}
             name="email"
@@ -29,6 +57,7 @@ export default function Login() {
 
           <CustomFieldInput
             onChangeText={login.handleChange("password")}
+            onBlur={login.handleBlur("password")}
             value={login.values.password}
             error={login.errors.password!}
             name="password"
@@ -38,7 +67,13 @@ export default function Login() {
             // label="Email"
           />
 
-          <CustomButton style={style.loginButton}>Login</CustomButton>
+          <CustomButton
+            loading={login.isSubmitting}
+            onPress={login.handleSubmit}
+            style={style.loginButton}
+          >
+            Login
+          </CustomButton>
         </View>
 
         <View style={style.optionalContainer}>

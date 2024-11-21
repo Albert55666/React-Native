@@ -19,22 +19,9 @@ export default function useAuthHooks() {
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
-        // let redirect = query.get("redirect");
-
         const { data } = await dispatch(signIn(values)).unwrap();
         console.log(data);
-
-        // if (redirect) {
-        //   return navigate.push(redirect as string);
-        // }
-        // toast.success("Login Successful");
-        // if (data?.legacy_v2?.user?.role === "USER") {
-        //   return navigate.push(routes.dashboard.usersdashboard);
-        // }
-        // return navigate.push(routes.admin.dashboard);
-      } catch (error) {
-        // return toast.error(error as string);
-      }
+      } catch (error) {}
     },
   });
 

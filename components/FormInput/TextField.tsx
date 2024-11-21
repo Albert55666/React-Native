@@ -1,7 +1,9 @@
 import {
   KeyboardTypeOptions,
+  NativeSyntheticEvent,
   StyleProp,
   StyleSheet,
+  TextInputFocusEventData,
   TextStyle,
 } from "react-native";
 import { TextInput } from "react-native";
@@ -16,8 +18,11 @@ export default function CustomFieldInput({
   label,
   name,
   error,
+  onBlur,
+  loading,
 }: {
   onChangeText: (e: string) => void;
+  onBlur: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
   placeholder: string;
   value: string;
   keyboardType?: KeyboardTypeOptions;
@@ -25,7 +30,10 @@ export default function CustomFieldInput({
   label?: string;
   name: string;
   error: string;
+  loading?: boolean;
 }) {
+  // console.log(name);
+
   return (
     <View style={styles.container}>
       {label && <Text style={styles.label}>{label}</Text>}
@@ -36,6 +44,9 @@ export default function CustomFieldInput({
         placeholder={placeholder}
         value={value}
         keyboardType={keyboardType}
+        onBlur={onBlur}
+        secureTextEntry={name === "password"}
+        editable={!loading}
       />
     </View>
   );
@@ -60,7 +71,7 @@ const styles = StyleSheet.create({
     color: "red",
     position: "absolute",
     right: 0,
-    top: -17,
+    top: -15,
     zIndex: 1,
 
     // fontSize: 10,

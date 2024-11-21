@@ -2,12 +2,15 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { initialState } from "./initial";
 import { RootState } from "@/store";
 
-export const flightSlice = createSlice({
+export const authSlice = createSlice({
   name: "auth",
   initialState: initialState,
   reducers: {
-    setUpdateActive: (state, { payload }: PayloadAction<{}>) => {
-      // state.active = payload;
+    setUser: (state, { payload }: PayloadAction<any>) => {
+      state.user = payload;
+    },
+    logUserOut: (state) => {
+      state.user = null;
     },
   },
   extraReducers: (builder) => {
@@ -15,5 +18,6 @@ export const flightSlice = createSlice({
   },
 });
 
-export default flightSlice.reducer;
+export default authSlice.reducer;
 export const SelectAuth = (state: RootState) => state.auth;
+export const { setUser, logUserOut } = authSlice.actions;
